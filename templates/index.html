@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Smart Text Processor</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: auto;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            textarea {
+                width: 100%;
+                height: 100px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                resize: none;
+                box-sizing: border-box;
+            }
+
+            button {
+                margin-top: 10px;
+                padding: 10px 20px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+            #result {
+                margin-top: 20px;
+                padding: 10px;
+                background: #e9ecef;
+                border-radius: 5px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>WebScraper using LLMs</h1>
+            <textarea
+                id="userInput"
+                placeholder="Enter text, URL, or query..."
+            ></textarea>
+            <button onclick="processInput()">Process</button>
+            <div id="result"></div>
+        </div>
+        <script>
+            function processInput() {
+                const userInput = document
+                    .getElementById("userInput")
+                    .value.trim();
+                const resultDiv = document.getElementById("result");
+
+                if (!userInput) {
+                    resultDiv.innerHTML =
+                        "<p style='color: red;'>Please enter some text.</p>";
+                    return;
+                }
+
+                resultDiv.innerHTML = "<p>Processing...</p>";
+
+                fetch("http://localhost:5000/process", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ text: userInput }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        resultDiv.innerHTML = `<p><strong>Summary:</strong> ${data.summary}</p>`;
+                    })
+                    .catch((error) => {
+                        resultDiv.innerHTML =
+                            "<p style='color: red;'>Error processing request.</p>";
+                        console.error("Error:", error);
+                    });
+            }
+        </script>
+    </body>
+</html>
